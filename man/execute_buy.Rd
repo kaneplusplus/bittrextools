@@ -4,7 +4,7 @@
 \alias{execute_buy}
 \title{Place a buy order}
 \usage{
-execute_buy(market, quantity, rate, dry_run = TRUE, log_cb)
+execute_buy(market, quantity, rate, dry_run = TRUE, log_cb = NULL)
 }
 \arguments{
 \item{market}{the market to place the buy limit order on.}
@@ -17,7 +17,7 @@ currency.}
 \item{dry_run}{is this a dry run (not actually run)? (default: TRUE)}
 
 \item{log_cb}{a callback is given market, time_stamp, order_type, quantity
-price, and order_uuid.}
+price, and order_uuid. (default: NULL)}
 }
 \description{
 Place a buy order

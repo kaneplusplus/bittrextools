@@ -9,10 +9,13 @@ open_orders <- function() {
 #' Cancel the open buy orders
 #' @param dry_run is this a dry run (not actually run)? (default: TRUE)
 #' @param log_cb a callback is given market, time_stamp, order_type, quantity
-#' price, and order_uuid.
+#' price, and order_uuid. (default: NULL)
 #' @importFrom bittrex bt_getopenorders bt_cancel
 #' @importFrom dplyr filter
-cancel_open_buys <- function(dry_run=TRUE, log_cb) {
+#' @importFrom tibble tibble
+#' @export
+cancel_open_buys <- function(dry_run=TRUE, log_cb=NULL) {
+  order_type <- order_uuid <- NULL
   if (!dry_run) {
     open_buys <- bt_getopenorders() %>% get_result() %>%  
       filter(order_type == "LIMIT_BUY")
@@ -24,7 +27,7 @@ cancel_open_buys <- function(dry_run=TRUE, log_cb) {
         price=as.double(open_buys$limit),
         order_uuid=as.character(order_uuid))
       result <- bt_cancel(open_buys$order_uuid[i]) %>% get_result()
-      if (!missing(log_cb)) {
+      if (!is.null(log_cb)) {
         log_cb(log_tbl)
       }
     }
@@ -35,10 +38,13 @@ cancel_open_buys <- function(dry_run=TRUE, log_cb) {
 #' Cancel the open sell orders
 #' @param dry_run is this a dry run (not actually run)? (default: TRUE)
 #' @param log_cb a callback is given market, time_stamp, order_type, quantity
-#' price, and order_uuid.
+#' price, and order_uuid. (default: NULL)
 #' @importFrom bittrex bt_getopenorders bt_cancel
 #' @importFrom dplyr filter
-cancel_open_sells <- function(dry_run=TRUE) {
+#' @importFrom tibble tibble
+#' @export
+cancel_open_sells <- function(dry_run=TRUE, log_cb=NULL) {
+  order_type <- open_buys <- order_uuid <- NULL
   if (!dry_run) {
     open_sells <- bt_getopenorders() %>% get_result() %>%
       filter(order_type == "LIMIT_SELL")
@@ -50,7 +56,7 @@ cancel_open_sells <- function(dry_run=TRUE) {
         price=as.double(open_buys$limit),
         order_uuid=as.character(order_uuid))
       result <- bt_cancel(open_sells$order_uuid[i]) %>% get_result()
-      if (!missing(log_cb)) {
+      if (!is.null(log_cb)) {
         log_cb(log_tbl)
       }
     }
@@ -60,11 +66,12 @@ cancel_open_sells <- function(dry_run=TRUE) {
 #' Cancel all open orders
 #' @param dry_run is this a dry run (not actually run)? (default: TRUE)
 #' @param log_cb a callback is given market, time_stamp, order_type, quantity
-#' price, and order_uuid.
+#' price, and order_uuid. (default: NULL)
 #' @importFrom bittrex bt_cancel bt_getopenorders
 #' @importFrom magrittr %>%
+#' @importFrom tibble tibble
 #' @export 
-cancel_open_orders <- function(dry_run=TRUE, log_cb) { 
+cancel_open_orders <- function(dry_run=TRUE, log_cb=NULL) { 
   
   if (!dry_run) {
     cancel_open_buys(dry_run, log_cb)
@@ -80,11 +87,12 @@ cancel_open_orders <- function(dry_run=TRUE, log_cb) {
 #' currency.
 #' @param dry_run is this a dry run (not actually run)? (default: TRUE)
 #' @param log_cb a callback is given market, time_stamp, order_type, quantity
-#' price, and order_uuid.
+#' price, and order_uuid. (default: NULL)
 #' @importFrom magrittr %>%
 #' @importFrom bittrex bt_buy
+#' @importFrom tibble tibble
 #' @export
-execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb) {
+execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
   if (!dry_run) {
     log_tbl <- tibble(market_name=as.character(market),
       time_stamp=as.integer(as.POSIXct(Sys.time())),
@@ -108,11 +116,12 @@ execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb) {
 #' currency.
 #' @param dry_run is this a dry run (not actually run)? (default: TRUE)
 #' @param log_cb a callback is given market, time_stamp, order_type, quantity
-#' price, and order_uuid.
+#' price, and order_uuid. (default: NULL)
 #' @importFrom magrittr %>%
-#' @importFrom bittrex bt_buy
+#' @importFrom bittrex bt_sell
+#' @importFrom tibble tibble
 #' @export
-execute_sell <- function(market, quantity, rate, dry_run=TRUE, log_cb) {
+execute_sell <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
   if (!dry_run) {
     log_tbl <- tibble(market_name=as.character(market),
       time_stamp=as.integer(as.POSIXct(Sys.time())),

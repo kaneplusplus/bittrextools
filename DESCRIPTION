@@ -4,7 +4,7 @@ Version: 0.0.1
 Authors@R: person("Michael", "Kane", email = "kaneplusplus@protonmail.com", role = c("aut", "cre"))
 Description: See the title.
 Depends: R (>= 3.3.2)
-Imports: bittrex, magrittr
+Imports: bittrex, magrittr, dplyr, tibble
 License: LGPL-2
 Encoding: UTF-8
 LazyData: true

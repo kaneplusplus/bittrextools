@@ -4,13 +4,13 @@
 \alias{cancel_open_orders}
 \title{Cancel all open orders}
 \usage{
-cancel_open_orders(dry_run = TRUE, log_cb)
+cancel_open_orders(dry_run = TRUE, log_cb = NULL)
 }
 \arguments{
 \item{dry_run}{is this a dry run (not actually run)? (default: TRUE)}
 
 \item{log_cb}{a callback is given market, time_stamp, order_type, quantity
-price, and order_uuid.}
+price, and order_uuid. (default: NULL)}
 }
 \description{
 Cancel all open orders
