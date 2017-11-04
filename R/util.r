@@ -18,7 +18,7 @@ cancel_open_buys <- function(dry_run=TRUE, log_cb) {
       filter(order_type == "LIMIT_BUY")
     for (i in 1:nrow(open_buys)) {
       log_tbl <- tibble(market_name=as.character(open_buys$exchange[i]),
-        time_stamp=as.POSIXct(Sys.time()),
+        time_stamp=as.integer(as.POSIXct(Sys.time())),
         order_type=as.character(open_buys$order_type[i]),
         quantity=as.double(open_buys$quantity_remaining[i]),
         price=as.double(open_buys$limit),
@@ -44,7 +44,7 @@ cancel_open_sells <- function(dry_run=TRUE) {
       filter(order_type == "LIMIT_SELL")
     for (i in 1:nrow(open_buys)) {
       log_tbl <- tibble(market_name=as.character(open_buys$exchange[i]),
-        time_stamp=as.POSIXct(Sys.time()),
+        time_stamp=as.integer(as.POSIXct(Sys.time())),
         order_type=as.character(open_buys$order_type[i]),
         quantity=as.double(open_buys$quantity_remaining[i]),
         price=as.double(open_buys$limit),
@@ -87,7 +87,7 @@ cancel_open_orders <- function(dry_run=TRUE, log_cb) {
 execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb) {
   if (!dry_run) {
     log_tbl <- tibble(market_name=as.character(market),
-      time_stamp=as.POSIXct(Sys.time()),
+      time_stamp=as.integer(as.POSIXct(Sys.time())),
       order_type=as.character("LIMIT_BUY"),
       quantity=as.double(quantity),
       price=as.double(rate),
@@ -115,7 +115,7 @@ execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb) {
 execute_sell <- function(market, quantity, rate, dry_run=TRUE, log_cb) {
   if (!dry_run) {
     log_tbl <- tibble(market_name=as.character(market),
-      time_stamp=as.POSIXct(Sys.time()),
+      time_stamp=as.integer(as.POSIXct(Sys.time())),
       order_type=as.character("LIMIT_BUY"),
       quantity=as.double(quantity),
       price=as.double(rate),
