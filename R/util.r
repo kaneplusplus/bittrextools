@@ -16,20 +16,21 @@ open_orders <- function() {
 #' @export
 cancel_open_buys <- function(dry_run=TRUE, log_cb=NULL) {
   order_type <- order_uuid <- NULL
-  if (!dry_run) {
-    open_buys <- bt_getopenorders() %>% get_result() %>%  
-      filter(order_type == "LIMIT_BUY")
-    for (i in 1:nrow(open_buys)) {
-      log_tbl <- tibble(market_name=as.character(open_buys$exchange[i]),
-        time_stamp=as.integer(as.POSIXct(Sys.time())),
-        order_type=as.character(open_buys$order_type[i]),
-        quantity=as.double(open_buys$quantity_remaining[i]),
-        price=as.double(open_buys$limit),
-        order_uuid=as.character(order_uuid))
+  open_buys <- bt_getopenorders() %>% get_result() %>%  
+    filter(order_type == "LIMIT_BUY")
+  for (i in 1:nrow(open_buys)) {
+    log_tbl <- tibble(market_name=as.character(open_buys$exchange[i]),
+      time_stamp=as.integer(as.POSIXct(Sys.time())),
+      order_type=as.character(open_buys$order_type[i]),
+      quantity=as.double(open_buys$quantity_remaining[i]),
+      price=as.double(open_buys$limit),
+      order_uuid=as.character(order_uuid),
+      dry_run=as.logical(dry_run))
+    if (!dry_run) {
       result <- bt_cancel(open_buys$order_uuid[i]) %>% get_result()
-      if (!is.null(log_cb)) {
-        log_cb(log_tbl)
-      }
+    }
+    if (!is.null(log_cb)) {
+      log_cb(log_tbl)
     }
   }
   invisible(TRUE)
@@ -45,20 +46,21 @@ cancel_open_buys <- function(dry_run=TRUE, log_cb=NULL) {
 #' @export
 cancel_open_sells <- function(dry_run=TRUE, log_cb=NULL) {
   order_type <- open_buys <- order_uuid <- NULL
-  if (!dry_run) {
-    open_sells <- bt_getopenorders() %>% get_result() %>%
-      filter(order_type == "LIMIT_SELL")
-    for (i in 1:nrow(open_buys)) {
-      log_tbl <- tibble(market_name=as.character(open_buys$exchange[i]),
-        time_stamp=as.integer(as.POSIXct(Sys.time())),
-        order_type=as.character(open_buys$order_type[i]),
-        quantity=as.double(open_buys$quantity_remaining[i]),
-        price=as.double(open_buys$limit),
-        order_uuid=as.character(order_uuid))
+  open_sells <- bt_getopenorders() %>% get_result() %>%
+    filter(order_type == "LIMIT_SELL")
+  for (i in 1:nrow(open_buys)) {
+    log_tbl <- tibble(market_name=as.character(open_buys$exchange[i]),
+      time_stamp=as.integer(as.POSIXct(Sys.time())),
+      order_type=as.character(open_buys$order_type[i]),
+      quantity=as.double(open_buys$quantity_remaining[i]),
+      price=as.double(open_buys$limit),
+      order_uuid=as.character(order_uuid),
+      dry_run=as.logical(dry_run))
+    if (!dry_run) {
       result <- bt_cancel(open_sells$order_uuid[i]) %>% get_result()
-      if (!is.null(log_cb)) {
-        log_cb(log_tbl)
-      }
+    }
+    if (!is.null(log_cb)) {
+      log_cb(log_tbl)
     }
   }
 }
@@ -93,18 +95,19 @@ cancel_open_orders <- function(dry_run=TRUE, log_cb=NULL) {
 #' @importFrom tibble tibble
 #' @export
 execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
+  log_tbl <- tibble(market_name=as.character(market),
+    time_stamp=as.integer(as.POSIXct(Sys.time())),
+    order_type=as.character("LIMIT_BUY"),
+    quantity=as.double(quantity),
+    price=as.double(rate),
+    order_uuid=as.character("NA"),
+    dry_run=dry_run)
   if (!dry_run) {
-    log_tbl <- tibble(market_name=as.character(market),
-      time_stamp=as.integer(as.POSIXct(Sys.time())),
-      order_type=as.character("LIMIT_BUY"),
-      quantity=as.double(quantity),
-      price=as.double(rate),
-      order_uuid=as.character("NA"))
     result <- bt_buy(market, quantity, rate) %>% get_result()
-    log_tbl$order_uuid[1] <- result$uuid
-    if (!missing(log_cb)) {
-      log_cb(log_tbl)
-    }
+  }
+  log_tbl$order_uuid[1] <- result$uuid
+  if (!missing(log_cb)) {
+    log_cb(log_tbl)
   }
   invisible(TRUE)
 }
@@ -122,18 +125,19 @@ execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
 #' @importFrom tibble tibble
 #' @export
 execute_sell <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
+  log_tbl <- tibble(market_name=as.character(market),
+    time_stamp=as.integer(as.POSIXct(Sys.time())),
+    order_type=as.character("LIMIT_BUY"),
+    quantity=as.double(quantity),
+    price=as.double(rate),
+    order_uuid=as.character("NA"),
+    dry_run=dry_run)
   if (!dry_run) {
-    log_tbl <- tibble(market_name=as.character(market),
-      time_stamp=as.integer(as.POSIXct(Sys.time())),
-      order_type=as.character("LIMIT_BUY"),
-      quantity=as.double(quantity),
-      price=as.double(rate),
-      order_uuid=as.character("NA"))
     result <- bt_sell(market, quantity, rate) %>% get_result()
-    log_tbl$order_uuid[1] <- result$uuid
-    if (!missing(log_cb)) {
-      log_cb(log_tbl)
-    }
+  }
+  log_tbl$order_uuid[1] <- result$uuid
+  if (!missing(log_cb)) {
+    log_cb(log_tbl)
   }
   invisible(TRUE)
 }
