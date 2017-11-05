@@ -175,7 +175,7 @@ flip_markets <- function(market_name, high, low, volume, last, base_volume,
     ret$low <- 1/high
   }
   if (!missing(low)) {
-    ret$low <- 1/high
+    ret$high <- 1/low
   }
   if (!missing(volume)) {
     ret$volume <- volume
@@ -215,9 +215,11 @@ flip_markets <- function(market_name, high, low, volume, last, base_volume,
 #' @param x the market summary
 #' @export
 flip_market_summary <- function(x) {
-  flip_markets(x$market_name, x$high, x$low, x$volume, x$last, x$base_volume,
-    x$time_stamp, x$bid, x$ask, x$open_buy_orders, x$open_sell_orders,
-    x$prev_day, x$created)
+  flip_markets(market_name=x$market_name, high=x$high, low=x$low, 
+  volume=x$volume, last=x$last, base_volume=x$base_volume,
+  time_stamp=x$time_stamp, bid=x$bid, ask=x$ask, 
+  open_buy_orders=x$open_buy_orders, open_sell_orders=x$open_sell_orders,
+  prev_day=x$prev_day, created=x$created)
 }
 
 #' If a bittrex call was successful, return the data
