@@ -74,11 +74,8 @@ cancel_open_sells <- function(dry_run=TRUE, log_cb=NULL) {
 #' @importFrom tibble tibble
 #' @export 
 cancel_open_orders <- function(dry_run=TRUE, log_cb=NULL) { 
-  
-  if (!dry_run) {
-    cancel_open_buys(dry_run, log_cb)
-    cancel_open_sells(dry_run, log_cb)
-  }
+  cancel_open_buys(dry_run, log_cb)
+  cancel_open_sells(dry_run, log_cb)
   invisible(TRUE)
 }
 
