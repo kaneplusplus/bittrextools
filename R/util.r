@@ -101,8 +101,8 @@ execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
     dry_run=dry_run)
   if (!dry_run) {
     result <- bt_buy(market, quantity, rate) %>% get_result()
+    log_tbl$order_uuid[1] <- result$uuid
   }
-  log_tbl$order_uuid[1] <- result$uuid
   if (!missing(log_cb)) {
     log_cb(log_tbl)
   }
@@ -131,8 +131,8 @@ execute_sell <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
     dry_run=dry_run)
   if (!dry_run) {
     result <- bt_sell(market, quantity, rate) %>% get_result()
+    log_tbl$order_uuid[1] <- result$uuid
   }
-  log_tbl$order_uuid[1] <- result$uuid
   if (!missing(log_cb)) {
     log_cb(log_tbl)
   }
