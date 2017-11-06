@@ -206,7 +206,7 @@ flip_markets <- function(market_name, high, low, volume, last, base_volume,
     ret$prev_day <- 1/prev_day
   }
   if (!missing(created)) {
-    ret$prev_day <- prev_day
+    ret$created <- created
   }
   ret
 }
@@ -216,11 +216,19 @@ flip_markets <- function(market_name, high, low, volume, last, base_volume,
 #' @param x the market summary
 #' @export
 flip_market_summary <- function(x) {
-  flip_markets(market_name=x$market_name, high=x$high, low=x$low, 
-  volume=x$volume, last=x$last, base_volume=x$base_volume,
-  time_stamp=x$time_stamp, bid=x$bid, ask=x$ask, 
-  open_buy_orders=x$open_buy_orders, open_sell_orders=x$open_sell_orders,
-  prev_day=x$prev_day, created=x$created)
+  if (nrow(x) == 0) {
+    tibble(market_name=character(), high=double(), low=double(),
+      volume=double(), last=double(), base_volume=double(),
+      time_stamp=integer(), bid=double(), ask=double(),
+      open_buy_orders=integer(), open_sell_orders=integer(),
+      prev_day=double(), created=character())
+  } else {
+    flip_markets(market_name=x$market_name, high=x$high, low=x$low, 
+      volume=x$volume, last=x$last, base_volume=x$base_volume,
+      time_stamp=x$time_stamp, bid=x$bid, ask=x$ask, 
+      open_buy_orders=x$open_buy_orders, open_sell_orders=x$open_sell_orders,
+      prev_day=x$prev_day, created=x$created)
+  }
 }
 
 #' If a bittrex call was successful, return the data
