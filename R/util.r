@@ -25,7 +25,7 @@ cancel_open_buys <- function(dry_run=TRUE, log_cb=NULL) {
       quantity=as.double(open_buys$quantity_remaining[i]),
       price=as.double(open_buys$limit),
       order_uuid=as.character(order_uuid),
-      dry_run=as.logical(dry_run))
+      dry_run=as.integer(dry_run))
     if (!dry_run) {
       result <- bt_cancel(open_buys$order_uuid[i]) %>% get_result()
     }
@@ -55,7 +55,7 @@ cancel_open_sells <- function(dry_run=TRUE, log_cb=NULL) {
       quantity=as.double(open_buys$quantity_remaining[i]),
       price=as.double(open_buys$limit),
       order_uuid=as.character(order_uuid),
-      dry_run=as.logical(dry_run))
+      dry_run=as.integer(dry_run))
     if (!dry_run) {
       result <- bt_cancel(open_sells$order_uuid[i]) %>% get_result()
     }
@@ -97,8 +97,8 @@ execute_buy <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
     order_type=as.character("LIMIT_BUY"),
     quantity=as.double(quantity),
     price=as.double(rate),
-    order_uuid=as.character("NA"),
-    dry_run=dry_run)
+    order_uuid=as.character(""),
+    dry_run=as.integer(dry_run))
   if (!dry_run) {
     result <- bt_buy(market, quantity, rate) %>% get_result()
     log_tbl$order_uuid[1] <- result$uuid
@@ -127,8 +127,8 @@ execute_sell <- function(market, quantity, rate, dry_run=TRUE, log_cb=NULL) {
     order_type=as.character("LIMIT_BUY"),
     quantity=as.double(quantity),
     price=as.double(rate),
-    order_uuid=as.character("NA"),
-    dry_run=dry_run)
+    order_uuid=as.character(""),
+    dry_run=as.integer(dry_run))
   if (!dry_run) {
     result <- bt_sell(market, quantity, rate) %>% get_result()
     log_tbl$order_uuid[1] <- result$uuid
